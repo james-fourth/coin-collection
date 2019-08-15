@@ -18,14 +18,16 @@ app.get("/", function(req, res) {
 
 app.post("/", function(req, res) {
 
-  let tickerRequestString = "https://apiv2.bitcoinaverage.com/indices/global/ticker/" + req.body.crypto + req.body.fiat;
+  let crypto = req.body.crypto;
+  let fiat = req.body.fiat;
+  let baseUrl = "https://apiv2.bitcoinaverage.com/indices/global/ticker/"
 
-  request(tickerRequestString, function(error, response, body) {
-    let selectionPriceString = "";
-    let selectionPriceParsed = JSON.parse(body);
+  let finalUrl = baseUrl + crypto + fiat;
 
-    selectionPriceString = selectionPriceParsed.last;
+  request(finalUrl, function(error, response, body) {
+    let currencyRequestBody = JSON.parse(body);
+    let currencyPrice = currencyRequestBody.last;
 
-    res.send("<h1>Coin Collection</h1><p>The price of " + req.body.crypto + " in " + req.body.fiat + " is " + selectionPriceString + "</p>");
+    res.send("<h1>Coin Collection</h1><p>The price of " + crypto + " in " + fiat + " is " + currencyPrice + "</p>");
   })
 })
