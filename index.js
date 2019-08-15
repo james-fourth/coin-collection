@@ -20,14 +20,25 @@ app.post("/", function(req, res) {
 
   let crypto = req.body.crypto;
   let fiat = req.body.fiat;
-  let baseUrl = "https://apiv2.bitcoinaverage.com/indices/global/ticker/"
+  let amount = req.body.amount;
+  // let baseUrl = "https://apiv2.bitcoinaverage.com/indices/global/ticker/"
 
-  let finalUrl = baseUrl + crypto + fiat;
+  // let finalUrl = baseUrl + crypto + fiat;
 
-  request(finalUrl, function(error, response, body) {
+  let options = {
+    uri: "https://apiv2.bitcoinaverage.com/convert/global",
+    qs: {
+      from: crypto,
+      to: fiat,
+      amount: amount
+    }
+  }
+
+  request(options, function(error, response, body) {
+    console.log(body);
     let currencyRequestBody = JSON.parse(body);
-    let currencyPrice = currencyRequestBody.last;
+    let currencyPrice = currencyRequestBody.price;
 
-    res.send("<h1>Coin Collection</h1><p>The price of " + crypto + " in " + fiat + " is " + currencyPrice + "</p>");
+    res.send("<h1>Coin Collection</h1><p>The price of " + amount + " " + crypto + " in " + fiat + " is " + currencyPrice + "</p>");
   })
 })
